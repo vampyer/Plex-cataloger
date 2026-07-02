@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Edit {{ item.title }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-4 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-card-image"></i> Poster</h5>
+            </div>
+            <div class="card-body text-center">
+                {% if item.poster_filename %}
+                    <img src="{{ url_for('poster_file', filename=item.poster_filename) }}" 
+                         class="img-fluid rounded shadow-sm mb-3" alt="Current poster" style="max-height: 300px; object-fit: contain;">
+                {% else %}
+                    <div class="poster-placeholder d-flex align-items-center justify-content-center bg-light rounded mb-3" style="height: 250px;">
+                        <i class="bi bi-film text-muted" style="font-size: 4rem;"></i>
+                    </div>
+                {% endif %}
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label">Upload New Poster</label>
+                        <input type="file" class="form-control" name="poster" accept="image/*">
+                        <div class="form-text">Supported: PNG, JPG, GIF, WebP (max 16MB)</div>
+                    </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-pencil-square"></i> Edit {{ item.title }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label class="form-label">Title</label>
+                            <input type="text" class="form-control" name="title" value="{{ item.title }}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Year</label>
+                            <input type="number" class="form-control" name="year" value="{{ item.year if item.year else '' }}">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Summary</label>
+                            <textarea class="form-control" name="summary" rows="3" placeholder="Enter item description...">{{ item.summary }}</textarea>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Rating (1-10)</label>
+                            <input type="number" step="0.1" min="0" max="10" class="form-control" name="rating" value="{{ item.rating if item.rating else '' }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Genres</label>
+                            <input type="text" class="form-control" name="genres" value="{{ item.genres if item.genres else '' }}" placeholder="Action, Drama, Comedy...">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Duration (minutes)</label>
+                            <input type="number" class="form-control" name="duration" value="{{ item.duration if item.duration else '' }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Director</label>
+                            <input type="text" class="form-control" name="director" value="{{ item.director if item.director else '' }}" placeholder="Director name...">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Studio</label>
+                            <input type="text" class="form-control" name="studio" value="{{ item.plex_studio if item.plex_studio else '' }}" placeholder="Studio name...">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Actors</label>
+                            <textarea class="form-control" name="actors" rows="2" placeholder="Actor 1, Actor 2, Actor 3...">{{ item.actors if item.actors else '' }}</textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Website URL</label>
+                            <input type="url" class="form-control" name="website_url" value="{{ item.website_url if item.website_url else '' }}" placeholder="https://...">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Trailer URL</label>
+                            <input type="url" class="form-control" name="trailer_url" value="{{ item.trailer_url if item.trailer_url else '' }}" placeholder="https://youtube.com/...">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Custom Notes</label>
+                            <textarea class="form-control" name="custom_notes" rows="3" placeholder="Any additional notes for your website...">{{ item.custom_notes if item.custom_notes else '' }}</textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 d-flex gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> Save Changes
+                        </button>
+                        <a href="/item/{{ item.id }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

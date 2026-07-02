@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Plex Cataloger{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="display-5">Dashboard</h1>
+        <p class="lead text-muted">Manage your Plex media catalog and export for websites</p>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="card bg-primary text-white h-100">
+            <div class="card-body text-center py-5">
+                <h2 class="display-3">{{ total_items }}</h2>
+                <p class="lead">Total Items</p>
+            </div>
+            <div class="card-footer">
+                <a href="/catalog" class="text-white text-decoration-none">View Catalog <i class="bi bi-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-success text-white h-100">
+            <div class="card-body text-center py-5">
+                <h2 class="display-3">{{ libraries|length }}</h2>
+                <p class="lead">Libraries</p>
+            </div>
+            <div class="card-footer">
+                <a href="/catalog" class="text-white text-decoration-none">Browse <i class="bi bi-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-info text-white h-100">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-cloud-download display-3"></i>
+                <p class="lead mt-2">Import from Plex</p>
+            </div>
+            <div class="card-footer">
+                <a href="/import" class="text-white text-decoration-none">Import Now <i class="bi bi-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Libraries</h5>
+                <a href="/import" class="btn btn-primary btn-sm">
+                    <i class="bi bi-plus-circle"></i> Import New
+                </a>
+            </div>
+            <div class="card-body">
+                {% if libraries %}
+                    <div class="row g-3">
+                        {% for lib in libraries %}
+                            <div class="col-md-6 col-lg-4">
+                                <div class="card h-100 shadow-sm">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h5 class="card-title">{{ lib.name }}</h5>
+                                                <p class="card-text text-muted">
+                                                    <i class="bi bi-tag"></i> {{ lib.item_type|title }}<br>
+                                                    <i class="bi bi-collection"></i> {{ lib.items|length }} items
+                                                </p>
+                                                <small class="text-muted">Added: {{ lib.created_at.strftime('%Y-%m-%d') }}</small>
+                                            </div>
+                                            <span class="badge bg-{{ 'primary' if lib.item_type == 'movie' else 'success' }}">
+                                                {{ lib.item_type|upper }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer bg-transparent">
+                                        <a href="/catalog/{{ lib.id }}" class="btn btn-outline-primary w-100 btn-sm">
+                                            View {{ lib.items|length }} Items
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-box display-1 text-muted"></i>
+                        <p class="lead text-muted mt-3">No libraries imported yet</p>
+                        <a href="/import" class="btn btn-primary">Import from Plex</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

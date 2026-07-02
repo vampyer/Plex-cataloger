@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-5 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-gear"></i> Add Connection</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{{ url_for('settings_page') }}">
+                    <div class="mb-3">
+                        <label for="plex_url" class="form-label">Plex Server URL</label>
+                        <input type="url" name="plex_url" id="plex_url" class="form-control" 
+                               placeholder="http://localhost:32400" required>
+                        <div class="form-text">Your Plex server address</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="plex_token" class="form-label">Plex Token</label>
+                        <input type="password" name="plex_token" id="plex_token" class="form-control" 
+                               placeholder="X-Plex-Token" required>
+                        <div class="form-text">
+                            <a href="https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token" target="_blank">
+                                <i class="bi bi-question-circle"></i> How to find your token
+                            </a>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="library_name" class="form-label">Library Name (Optional)</label>
+                        <input type="text" name="library_name" id="library_name" class="form-control" 
+                               placeholder="Movies, TV Shows, etc.">
+                        <div class="form-text">Leave empty to use all libraries</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-save"></i> Save Connection
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="mb-0"><i class="bi bi-hdd-network"></i> Saved Connections</h4>
+                <span class="badge bg-primary">{{ settings|length }} connections</span>
+            </div>
+            <div class="card-body">
+                {% if settings %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Server</th>
+                                    <th>Library</th>
+                                    <th>Last Updated</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for s in settings %}
+                                    <tr>
+                                        <td>
+                                            <i class="bi bi-server text-primary"></i>
+                                            <code class="ms-1">{{ s.plex_url }}</code>
+                                        </td>
+                                        <td>
+                                            {% if s.library_name %}
+                                                <span class="badge bg-secondary">{{ s.library_name }}</span>
+                                            {% else %}
+                                                <span class="text-muted">All libraries</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-muted small">
+                                            {{ s.updated_at.strftime('%Y-%m-%d %H:%M') }}
+                                        </td>
+                                        <td class="text-end">
+                                            <form method="post" action="{{ url_for('delete_setting', id=s.id) }}" style="display:inline">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                                        onclick="return confirm('Delete this connection?')">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-hdd-network text-muted" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-2">No saved connections yet</p>
+                        <p class="small">Add a connection to get started</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

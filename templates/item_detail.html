@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}{{ item.title }} - Plex Cataloger{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-3 mb-4">
+        <div class="card shadow-sm">
+            {% if item.poster_filename %}
+                <img src="{{ url_for('poster_file', filename=item.poster_filename) }}" 
+                     class="card-img-top" alt="{{ item.title }} poster" style="max-height: 500px; object-fit: contain;">
+            {% else %}
+                <div class="poster-placeholder d-flex align-items-center justify-content-center bg-light" style="height: 400px;">
+                    <i class="bi bi-film text-muted" style="font-size: 5rem;"></i>
+                </div>
+            {% endif %}
+            <div class="card-body text-center">
+                <h5 class="card-title">{{ item.title }}</h5>
+                <p class="text-muted">{{ item.year if item.year else 'N/A' }}</p>
+                <div class="d-grid gap-2">
+                    <a href="/item/{{ item.id }}/edit" class="btn btn-primary">
+                        <i class="bi bi-pencil"></i> Edit
+                    </a>
+                    <form method="POST" action="/item/{{ item.id }}/delete" onsubmit="return confirm('Are you sure?')">
+                        <button type="submit" class="btn btn-outline-danger w-100">
+                            <i class="bi bi-trash"></i> Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-9">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header">
+                <h3>{{ item.title }} {% if item.year %}({{ item.year }}){% endif %}</h3>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    {% if item.rating %}
+                        <div class="col-sm-6">
+                            <strong><i class="bi bi-star-fill text-warning"></i> Rating:</strong> {{ item.rating|round(1) }}/10
+                        </div>
+                    {% endif %}
+                    {% if item.genres %}
+                        <div class="col-sm-6">
+                            <strong><i class="bi bi-tag"></i> Genres:</strong> {{ item.genres }}
+                        </div>
+                    {% endif %}
+                    {% if item.director %}
+                        <div class="col-sm-6">
+                            <strong><i class="bi bi-person-workspace"></i> Director:</strong> {{ item.director }}
+                        </div>
+                    {% endif %}
+                    {% if item.duration %}
+                        <div class="col-sm-6">
+                            <strong><i class="bi bi-clock"></i> Duration:</strong> {{ item.duration }} min
+                        </div>
+                    {% endif %}
+                    {% if item.plex_studio %}
+                        <div class="col-sm-6">
+                            <strong><i class="bi bi-building"></i> Studio:</strong> {{ item.plex_studio }}
+                        </div>
+                    {% endif %}
+                    {% if item.plex_content_rating %}
+                        <div class="col-sm-6">
+                            <strong><i class="bi bi-shield-check"></i> Content Rating:</strong> {{ item.plex_content_rating }}
+                        </div>
+                    {% endif %}
+                    {% if item.website_url %}
+                        <div class="col-sm-6">
+                            <strong><i class="bi bi-link-45deg"></i> Website:</strong>
+                            <a href="{{ item.website_url }}" target="_blank">{{ item.website_url }}</a>
+                        </div>
+                    {% endif %}
+                    {% if item.trailer_url %}
+                        <div class="col-sm-6">
+                            <strong><i class="bi bi-play-btn"></i> Trailer:</strong>
+                            <a href="{{ item.trailer_url }}" target="_blank">Watch Trailer</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        {% if item.summary %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h5>Summary</h5>
+                </div>
+                <div class="card-body">
+                    <p class="lead">{{ item.summary }}</p>
+                </div>
+            </div>
+        {% endif %}
+        
+        {% if item.actors %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h5><i class="bi bi-people"></i> Cast</h5>
+                </div>
+                <div class="card-body">
+                    <p>{{ item.actors }}</p>
+                </div>
+            </div>
+        {% endif %}
+        
+        {% if item.custom_notes %}
+            <div class="card shadow-sm mb-4 border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="bi bi-sticky"></i> Custom Notes</h5>
+                </div>
+                <div class="card-body">
+                    <p>{{ item.custom_notes }}</p>
+                </div>
+            </div>
+        {% endif %}
+        
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5>Import Details</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-2 text-muted small">
+                    <div class="col-md-6">
+                        <strong>Plex Title:</strong> {{ item.plex_title if item.plex_title else item.title }}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Plex Rating:</strong> {{ item.plex_rating if item.plex_rating else 'N/A' }}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Added to Plex:</strong> {{ item.plex_added_at.strftime('%Y-%m-%d %H:%M') if item.plex_added_at else 'N/A' }}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Created in Catalog:</strong> {{ item.created_at.strftime('%Y-%m-%d %H:%M') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

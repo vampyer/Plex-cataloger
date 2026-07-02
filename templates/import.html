@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Import from Plex{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card shadow">
+            <div class="card-header">
+                <h4 class="mb-0"><i class="bi bi-cloud-download"></i> Import from Plex</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Saved Connections</label>
+                        <select id="saved_select" class="form-select">
+                            <option value="">-- Select a saved connection --</option>
+                            {% for s in saved_settings %}
+                            <option data-url="{{ s.plex_url }}" data-token="{{ s.get_token() }}" data-lib="{{ s.library_name }}">{{ s.plex_url }} {% if s.library_name %} - {{ s.library_name }}{% endif %}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text">Selecting a saved connection will pre-fill the form below.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Plex Server URL</label>
+                           <input type="url" class="form-control" name="plex_url" 
+                               placeholder="http://localhost:32400" value="{{ plex_url or '' }}" required>
+                        <div class="form-text">
+                            Your Plex server URL (e.g., http://192.168.1.100:32400)
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Plex Token (X-Plex-Token)</label>
+                           <input type="text" class="form-control" name="plex_token" 
+                               placeholder="Enter your Plex token" value="{{ plex_token or '' }}" required>
+                        <div class="form-text">
+                            <a href="https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token" target="_blank">
+                                How to find your Plex Token
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Library Name (Optional)</label>
+                           <input type="text" class="form-control" name="library_name" 
+                               placeholder="e.g., Movies, TV Shows" value="{{ library_name or '' }}">
+                        <div class="form-text">Leave empty to import from all movie and TV show libraries</div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <h6><i class="bi bi-info-circle"></i> What gets imported:</h6>
+                        <ul class="mb-0">
+                            <li>Movie and TV show metadata</li>
+                            <li>Poster images</li>
+                            <li>Genres, ratings, cast, directors</li>
+                            <li>Summary and descriptions</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-download"></i> Start Import
+                        </button>
+                    </div>
+                </form>
+                <script>
+                    document.getElementById('saved_select')?.addEventListener('change', function(e){
+                        var opt = this.selectedOptions[0];
+                        if(!opt) return;
+                        var url = opt.getAttribute('data-url');
+                        var token = opt.getAttribute('data-token');
+                        var lib = opt.getAttribute('data-lib');
+                        if(url) document.querySelector('input[name="plex_url"]').value = url;
+                        if(token) document.querySelector('input[name="plex_token"]').value = token;
+                        if(lib) document.querySelector('input[name="library_name"]').value = lib;
+                    });
+                </script>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">Manual Upload</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Alternatively, you can upload items manually using the catalog view.</p>
+                <a href="/catalog" class="btn btn-outline-primary">Go to Catalog</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Catalog{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-0">
+            {% if library %}
+                <i class="bi bi-collection-play"></i> {{ library.name }}
+            {% else %}
+                <i class="bi bi-grid"></i> Full Catalog
+            {% endif %}
+        </h2>
+        <p class="text-muted">{{ pagination.total }} items</p>
+    </div>
+    <div class="d-flex gap-2">
+        {% if library %}
+            <a href="/export/{{ library.id }}" class="btn btn-success">
+                <i class="bi bi-download"></i> Export Library
+            </a>
+        {% endif %}
+        <a href="/import" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Import
+        </a>
+    </div>
+</div>
+
+{% if libraries and libraries|length > 1 %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h6 class="mb-0">Filter by Library</h6>
+    </div>
+    <div class="card-body py-2">
+        <div class="btn-group flex-wrap">
+            <a href="/catalog" class="btn btn-sm {{ 'btn-primary' if not library else 'btn-outline-primary' }}">
+                All
+            </a>
+            {% for lib in libraries %}
+                <a href="/catalog/{{ lib.id }}" class="btn btn-sm {{ 'btn-primary' if library and library.id == lib.id else 'btn-outline-primary' }}">
+                    {{ lib.name }} ({{ lib.items|length }})
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if items %}
+    <div class="row g-4">
+        {% for item in items %}
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                <div class="card h-100 shadow-sm poster-card">
+                    <a href="/item/{{ item.id }}" class="text-decoration-none">
+                        {% if item.poster_filename %}
+                            <img src="{{ url_for('poster_file', filename=item.poster_filename) }}" 
+                                 class="card-img-top poster-img" alt="{{ item.title }} poster">
+                        {% else %}
+                            <div class="poster-placeholder d-flex align-items-center justify-content-center">
+                                <i class="bi bi-film text-muted" style="font-size: 3rem;"></i>
+                            </div>
+                        {% endif %}
+                    </a>
+                    <div class="card-body p-2">
+                        <h6 class="card-title text-truncate" title="{{ item.title }}">
+                            <a href="/item/{{ item.id }}" class="text-decoration-none text-dark">
+                                {{ item.title }}
+                            </a>
+                        </h6>
+                        <p class="card-text small text-muted mb-0">
+                            {{ item.year if item.year else 'N/A' }}
+                            {% if item.rating %}
+                                <span class="text-warning"><i class="bi bi-star-fill"></i> {{ item.rating|round(1) }}</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    
+    {% if pagination.pages > 1 %}
+        <nav class="mt-5">
+            <ul class="pagination justify-content-center">
+                {% if pagination.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('catalog', page=pagination.prev_num, library_id=library.id if library else None) }}">
+                            Previous
+                        </a>
+                    </li>
+                {% endif %}
+                
+                {% for page_num in pagination.iter_pages() %}
+                    {% if page_num %}
+                        {% if page_num == pagination.page %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ page_num }}</span>
+                            </li>
+                        {% else %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('catalog', page=page_num, library_id=library.id if library else None) }}">
+                                    {{ page_num }}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if pagination.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('catalog', page=pagination.next_num, library_id=library.id if library else None) }}">
+                            Next
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+{% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-inbox display-1 text-muted"></i>
+        <p class="lead text-muted mt-3">No items in this catalog yet</p>
+        <a href="/import" class="btn btn-primary">Import from Plex</a>
+    </div>
+{% endif %}
+{% endblock %}

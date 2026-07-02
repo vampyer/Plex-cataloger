@@ -1,0 +1,24 @@
+<!--
+  Plex Cataloger icon (original artwork) — CC0 1.0 Universal
+  This is an original, openly-licensed icon representing a stylized "P" + film strip
+  Do not confuse with the Plex trademarked logo; this is an independent design.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#f07f1a" />
+      <stop offset="1" stop-color="#ffcb2f" />
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="36" fill="#0f1724" />
+
+  <!-- inner panel (light) to host the wordmark -->
+  <rect x="36" y="44" width="184" height="168" rx="18" fill="#ffffff" />
+
+  <!-- wordmark: 'ple' black and 'X' gold -->
+  <text x="50%" y="56%" font-family="Segoe UI, Arial, sans-serif" font-weight="700" font-size="96" text-anchor="middle" dominant-baseline="middle">
+    <tspan fill="#000000">ple</tspan>
+    <tspan fill="#ffcb2f">X</tspan>
+  </text>
+
+</svg>

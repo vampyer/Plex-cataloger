@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Export Catalog{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-4 mb-4">
+        <div class="card shadow">
+            <div class="card-header">
+                <h4 class="mb-0"><i class="bi bi-download"></i> Generate Export</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="/export/generate">
+                    <div class="mb-3">
+                        <label class="form-label">Export Name</label>
+                        <input type="text" class="form-control" name="name" 
+                               value="plex_export" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Library</label>
+                        <select class="form-select" name="library_id">
+                            <option value="">All Libraries</option>
+                            {% for lib in libraries %}
+                                <option value="{{ lib.id }}" {% if library and library.id == lib.id %}selected{% endif %}>
+                                    {{ lib.name }} ({{ lib.items|length }} items)
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Format</label>
+                        <select class="form-select" name="format" id="exportFormat">
+                            <option value="json">JSON - Web Application</option>
+                            <option value="html">HTML - Static Website Page</option>
+                            <option value="csv">CSV - Spreadsheet Data</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3" id="postersOption">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="includePosters" name="include_posters">
+                            <label class="form-check-label" for="includePosters">
+                                Include poster images (HTML only)
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="bi bi-download"></i> Generate Export
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4 shadow">
+            <div class="card-header">
+                <h5 class="mb-0">Export Formats</h5>
+            </div>
+            <div class="card-body">
+                <h6>JSON</h6>
+                <p class="small text-muted">Perfect for web applications. Includes all metadata as structured data.</p>
+                
+                <h6>HTML</h6>
+                <p class="small text-muted">Ready-to-use static webpage with poster images. Deploy directly to your site.</p>
+                
+                <h6>CSV</h6>
+                <p class="small text-muted">Spreadsheet-friendly format for further analysis.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Recent Exports</h5>
+            </div>
+            <div class="card-body">
+                {% if exports %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Format</th>
+                                    <th>Records</th>
+                                    <th>Created</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for export in exports %}
+                                    <tr>
+                                        <td>{{ export.name }}</td>
+                                        <td>
+                                            <span class="badge bg-{{ 'primary' if export.format == 'json' else 'success' if export.format == 'html' else 'secondary' }}">
+                                                {{ export.format|upper }}
+                                            </span>
+                                        </td>
+                                        <td>{{ export.record_count }}</td>
+                                        <td>{{ export.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                        <td>
+                                            <a href="/export/download/{{ export.filename }}" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-download"></i> Download
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4 text-muted">
+                        <i class="bi bi-archive display-4"></i>
+                        <p class="mt-2">No exports yet. Create your first export above.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.getElementById('exportFormat').addEventListener('change', function() {
+    const postersOption = document.getElementById('postersOption');
+    if (this.value === 'html') {
+        postersOption.style.display = 'block';
+    } else {
+        postersOption.style.display = 'none';
+    }
+});
+</script>
+{% endblock %}

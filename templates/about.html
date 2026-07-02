@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}About{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-6 mx-auto">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-info-circle"></i> About</h4>
+            </div>
+            <div class="card-body text-center py-5">
+                <div class="mb-4">
+                    <i class="bi bi-film text-primary" style="font-size: 4rem;"></i>
+                </div>
+                <h2 class="display-5">Plex Cataloger</h2>
+                <p class="lead text-muted">A simple tool to catalog and export your Plex media library</p>
+                
+                <hr class="my-4">
+                
+                <div class="mb-4">
+                    <h5><i class="bi bi-code-slash"></i> Version</h5>
+                    <p class="h4">1.2b</p>
+                </div>
+                
+                <div class="mb-4">
+                    <h5><i class="bi bi-person-badge"></i> Developer</h5>
+                    <p class="h4 text-primary">Vampyer Knight 2026</p>
+                </div>
+                
+                <div class="mb-4">
+                    <h5><i class="bi bi-gear"></i> Built With</h5>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <span class="badge bg-secondary">Python</span>
+                        <span class="badge bg-secondary">Flask</span>
+                        <span class="badge bg-secondary">PyInstaller</span>
+                        <span class="badge bg-secondary">Bootstrap 5</span>
+                    </div>
+                </div>
+                
+                <hr class="my-4">
+                
+                <a href="https://github.com" target="_blank" class="btn btn-primary">
+                    <i class="bi bi-github"></i> View Source
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
