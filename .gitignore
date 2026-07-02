@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+instance/
+*.db
+static/images/posters/*
+!static/images/posters/.gitkeep
+exports/*
+!exports/.gitkeep
+.venv/
+venv/
+*.egg-info/
